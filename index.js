@@ -67,18 +67,41 @@ app.get("/admin/menu/delete", async (request, response) => {
   await deleteLink(request.query.linkId);
   response.redirect("/admin/menu");
 })
+
+
 // EDIT PAGE AND FORM PROCESSING PATH
+
+//app.get("/admin/menu/edit", async(request, response) => {
+  //const _id = request.query.id;
+  //const link = await getLinkById(_id); // Fetch the link from the database
+  //response.render("menu-edit", { title: "Edit link", link });
+  //});
+
 app.get("/admin/menu/edit", async (request, response) => {
-  const _id = request.query.id;
-  const link = await getLinkById(_id); // Fetch the link from the database
-  response.render("editMenu", { title: "Edit link", link });
+  let id = request.query.linkId;
+  let link = await getLinkById(id);
+  let links = await getLinks();
+  if (link) {
+    response.render("menu-edit", { title: "Edit link", link: link, menu: links });
+  }
 });
-app.post("/admin/menu/edit", async (request, response) => {
-  const { _id, weight, path, name } = request.body;
-  const link = { weight: parseInt(weight), path, name };
-  await editLink(_id, link); // Call the editLink function to update the menu link
-  response.redirect("/admin/menu"); // Redirect to the menu list after editing
-});
+
+app.post("/admin/menu/edit/submit", async (request, response) => {
+  //weight=1&path=/about&name=About
+  //For POST forms, data gets submitted in the body (request.body) and you can get each field's data using request.body.<field_name>
+  let wgt = request.body.weight;
+  let href = request.body.path;
+  let text = request.body.name;
+
+  let newLink = {
+    weight: parseInt(wgt),
+    path: href,
+    name: text
+  };
+  await editLink(request.query.linkId, newLink);
+  response.redirect("/admin/menu"); //when done, redirect back to /admin/menu
+})
+
 
 //MONGODB FUNCTIONS
 async function connection() {

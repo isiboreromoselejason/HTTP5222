@@ -2,7 +2,7 @@ extends common/layout
 
 block layout-content
   h1 Edit Menu Link
-  form(method="post", action="/admin/menu/edit")
+  form(method="post", action="/admin/menu/edit/submit")
     input(type="hidden", name="_id", value=link._id)
     div
       label(for="wgt") Weight:
