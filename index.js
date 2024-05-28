@@ -79,7 +79,7 @@ app.get("/admin/menu/delete", async (request, response) => {
 
 app.get("/admin/menu/edit", async (request, response) => {
   let id = request.query.linkId;
-  let link = await getLinkById(id);
+  let link = await db.collection("menuLinks").findOne({ _id: new ObjectId(id) });
   let links = await getLinks();
   if (link) {
     response.render("menu-edit", { title: "Edit link", link: link, menu: links });
@@ -98,7 +98,7 @@ app.post("/admin/menu/edit/submit", async (request, response) => {
     path: href,
     name: text
   };
-  await editLink(request.query.linkId, newLink);
+  await editLink(request.body.linkId, newLink);
   response.redirect("/admin/menu"); //when done, redirect back to /admin/menu
 })
 
